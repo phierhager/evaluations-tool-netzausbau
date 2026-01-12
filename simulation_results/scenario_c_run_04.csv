@@ -1,0 +1,10 @@
+# METADATA_START
+# Scenario: Scenario C (§14a Limits)
+# Strategy: RL Agent (AP5)
+# Hardware: Raspberry Pi 4
+# METADATA_END
+Timestamp,Grid Status,Min Voltage,Trafo Load,Curtailed Energy
+2025-01-01 00:00,OK,230.0,40,0.0
+2025-01-01 00:15,OK,228.5,50,0.0
+2025-01-01 00:30,CRITICAL,206.5,85,5.2
+2025-01-01 00:45,OK,210.0,70,2.1
