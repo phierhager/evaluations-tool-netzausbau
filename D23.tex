@@ -1,0 +1,469 @@
+\documentclass[
+    a4paper,
+    11pt,
+    parskip=half,   % Europäischer Absatzabstand statt Einzug
+    ngerman         % Neue deutsche Rechtschreibung
+]{scrartcl}
+
+% --- Pakete ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{babel}
+\usepackage{lmodern}            % Bessere Schriftart
+\usepackage[margin=2.5cm]{geometry} % Ränder anpassen
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tabularx}           % Tabellen mit automatischer Spaltenbreite
+\usepackage{booktabs}           % Professionelle Tabellenlinien
+\usepackage{amsmath}            % Für mathematische Formeln
+\usepackage{listings}           % Für Code-Blöcke
+\usepackage{hyperref}           % Verlinkungen im PDF
+
+% --- Farben definieren ---
+\definecolor{hawblue}{RGB}{0, 51, 102} % Beispielhaftes Dunkelblau
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+\definecolor{codecomment}{rgb}{0.0,0.6,0.0}
+\definecolor{codestring}{rgb}{0.58,0.0,0.82}
+\definecolor{codekeyword}{rgb}{0.0,0.0,1.0}
+
+% --- Code-Style Einstellungen ---
+\lstset{
+    backgroundcolor=\color{codegray},
+    commentstyle=\color{codecomment},
+    keywordstyle=\color{codekeyword}\bfseries,
+    stringstyle=\color{codestring},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    numberstyle=\tiny\color{gray},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single,
+    inputencoding=utf8,
+    extendedchars=true,
+    literate={ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1
+}
+
+% Definition für JSON-Highlighting (da listings kein natives JSON hat)
+\lstdefinelanguage{json}{
+    basicstyle=\ttfamily\footnotesize,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{codegray},
+    literate=
+     *{0}{{{\color{blue}0}}}{1}
+      {1}{{{\color{blue}1}}}{1}
+      {2}{{{\color{blue}2}}}{1}
+      {3}{{{\color{blue}3}}}{1}
+      {4}{{{\color{blue}4}}}{1}
+      {5}{{{\color{blue}5}}}{1}
+      {6}{{{\color{blue}6}}}{1}
+      {7}{{{\color{blue}7}}}{1}
+      {8}{{{\color{blue}8}}}{1}
+      {9}{{{\color{blue}9}}}{1}
+      {:}{{{\color{black}:}}}{1}
+      {,}{{{\color{black},}}}{1}
+      {\{}{{{\color{black}\{}}}{1}
+      {\}}{{{\color{black}\}}}}{1}
+      {[}{{{\color{black}[}}}{1}
+      {]}{{{\color{black}]}}}{1},
+}
+
+% --- Metadaten ---
+\title{\textbf{Deliverable D2.3: Evaluations-Tool \& Maßnahmenkatalog}}
+\subtitle{Projekt: PhyLFlex | Arbeitspaket 2.2}
+\author{Verantwortlich: HAW Landshut (HAWL)}
+\date{Version 2.0 (Überarbeitetes Konzept)}
+
+% --- Dokumentenbeginn ---
+\begin{document}
+
+\maketitle
+
+\begin{description}
+    \item[Projekt:] PhyLFlex
+    \item[Arbeitspaket:] AP 2.2 (Konzept eines Evaluations-Tools)
+    \item[Partner:] TUM, ÜZW, SAG
+\end{description}
+
+\hrule
+\tableofcontents
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+% -------------------------------------------------------------------
+\section{Management Summary (Zusammenfassung)}
+Dieses Dokument definiert das Konzept für das \textbf{Evaluations-Tool}. Dieses Werkzeug fungiert als Wegweiser zwischen den konkurrierenden Interessen des Verteilnetzbetreibers (VNB/DSO) und den Energielieferanten/Verbrauchern.
+
+Das Tool steuert das Netz nicht aktiv; es \textit{auditiert} die Netzsimulation. Es nimmt die physikalischen Ergebnisse (Spannungen, Lasten) entgegen und wendet eine rigorose \textbf{Kosten-Nutzen-Analyse} an, um festzustellen, ob eine spezifische Flexibilitätsmaßnahme im Vergleich zum klassischen Netzausbau wirtschaftlich rentabel ist.
+
+% -------------------------------------------------------------------
+\section{Maßnahmenkatalog}
+Die folgenden spezifischen Interventionen sind für die Bewertung innerhalb des Tools definiert. Diese lassen sich direkt auf die im Förderantrag genannten regulatorischen Anforderungen abbilden.
+
+\subsection{Kategorie A: Marktseitige Maßnahmen (Die „Ursache“)}
+Diese Maßnahmen stellen Anreize dar, die an die Verbraucher gesendet werden, um deren Kosten zu optimieren.
+
+\begin{itemize}
+    \item \textbf{Maßnahme A1: Dynamische Tarife (§41a EnWG):} Das GEMS empfängt einen Preisvektor, der vom EPEX-Spotmarkt abgeleitet ist. Dies bedeutet primär Day-Ahead- und zeitvariable Preisgestaltung (Time of Use).
+    \item \textbf{Maßnahme A2: Variable Netzentgelte (§14a Modul 3):} Reduzierte Netzentgelte im Austausch für die Duldung externer Steuerungseingriffe.
+\end{itemize}
+
+\subsection{Kategorie B: Netzseitige Maßnahmen (Die „Lösung“)}
+Diese Maßnahmen sind die Reaktion des VNB auf den durch die Verbraucher verursachten Netzstress.
+
+\begin{itemize}
+    \item \textbf{Maßnahme B1: Kuratives Eingreifen (Dimmen):} Die temporäre Leistungsreduzierung von steuerbaren Verbrauchseinrichtungen (SteuVE), um eine unmittelbare Überlastung zu verhindern.
+    \item \textbf{Maßnahme B2: Konventionelle Verstärkung:} Der physikalische Austausch von Betriebsmitteln (z.\,B. Ersatz eines 400 kVA Transformators durch eine 630 kVA Einheit oder die Verlegung von Parallelkabeln).
+\end{itemize}
+
+% -------------------------------------------------------------------
+\section{Bewertungslogik: Das Kostenbilanzmodell}
+Die Kernfunktion des Bewertungstools ist die Berechnung der \textbf{Systemgesamtkosten} für jedes Szenario. Es vergleicht die „Eisen-Investition“ (CAPEX) mit der „Flexibilitätsvergütung“ (OPEX).
+
+\subsection{Kostenkomponente: Virtueller CAPEX (Netzausbau)}
+Wenn die Simulation Spannungsverletzungen oder thermische Überlastungen aufzeigt, die nicht softwareseitig gelöst werden können, berechnet das Tool die Kosten des „Nichtstuns“ (physikalische Verstärkung):
+
+\textbf{Auslöser (Triggers):}
+\begin{itemize}
+    \item \textbf{Unterspannung:} $< 207\,\text{V}$ (Netz zu schwach für die Last)
+    \item \textbf{Überspannung:} $> 253\,\text{V}$ (Netz zu schwach für PV-Einspeisung)
+    \item \textbf{Thermische Überlast:} $> 100\,\%$ der Kabel-/Trafo-Grenzwerte
+\end{itemize}
+
+\textbf{Formel:}
+\[
+\text{CAPEX} = (\text{Länge des ausgefallenen Kabels [km]} \times \text{Kosten [€/km]}) + \text{Kosten Trafoaustausch [€]}
+\]
+
+\subsection{Kostenkomponente: Interventions-OPEX (Abregelung)}
+Wenn das Netz stabil bleibt, weil das GEMS die Leistungsflüsse aktiv gesteuert hat, berechnen wir den wirtschaftlichen Verlust, der mit diesen Eingriffen verbunden ist:
+
+\begin{itemize}
+    \item \textbf{A) Kosten der Lastabregelung (Komfortverlust):}
+    \begin{itemize}
+        \item \textit{Szenario:} Nutzer möchte E-Auto laden, Netz begrenzt die Leistung.
+        \item \textit{Formel:} $\text{Abgeregelte Energie (kWh)} \times \text{Unannehmlichkeitsstrafe (€/kWh)}$
+    \end{itemize}
+    
+    \item \textbf{B) Kosten der PV-Abregelung (Entgangene Einnahmen):}
+    \begin{itemize}
+        \item \textit{Szenario:} PV-Erzeugung übersteigt Netzkapazität; Wechselrichter wird gedrosselt.
+        \item \textit{Formel:} $\text{Verlorene Erzeugung (kWh)} \times \text{Einspeisetarif (€/kWh)}$
+    \end{itemize}
+\end{itemize}
+
+% -------------------------------------------------------------------
+\section{Schnittstellenspezifikation}
+Um sicherzustellen, dass das Bewertungstool objektiv ist, benötigt es ein standardisiertes Eingabeformat aus der Netzsimulation (AP 3). Dies trennt die \textit{Physik} (Simulation) von der \textit{Ökonomie} (Bewertung).
+
+Die Netzsimulation muss einen Datensatz exportieren, der für jeden 15-Minuten-Zeitschritt die Felder in Tabelle \ref{felder} enthält.
+
+\begin{table}[h]
+\label{felder}
+\centering
+\begin{tabularx}{\textwidth}{lXl}
+\toprule
+\textbf{Feldname} & \textbf{Beschreibung} & \textbf{Einheit} \\
+\midrule
+\textbf{Zeitstempel} & ISO 8601 Datum/Zeit-String. & Zeit \\
+\textbf{Netzstatus} & Kategorisches Kennzeichen (OK / WARNUNG / KRITISCH). & String \\
+\textbf{Min. Spannung} & Die niedrigste an einem Knoten im Cluster gemessene Spannung. & Volt (V) \\
+\textbf{Max. Spannung} & Die höchste an einem Knoten im Cluster gemessene Spannung. & Volt (V) \\
+\textbf{Trafo-Auslastung} & Die prozentuale Spitzenauslastung des lokalen Transformators. & Prozent (\%) \\
+\textbf{Kabelausfälle} & Gesamtlänge der Kabel, die thermische Grenzwerte überschreiten. & km \\
+\textbf{Abgeregelte Last} & Von flexiblen Lasten (EV/WP) angeforderte, aber vom Netz verweigerte Energie. & kWh \\
+\textbf{Abgeregelte PV} & Potenzielle PV-Erzeugung, die durch Netzlimits (Überspannung/Sättigung) unterdrückt wurde. & kWh \\
+\bottomrule
+\end{tabularx}
+\caption{Datenfelder der Simulationsschnittstelle}
+\end{table}
+
+% -------------------------------------------------------------------
+\section{KPI-Definitionen \& Verletzungsgrenzwerte}
+Um eine eindeutige Bewertung zu gewährleisten, wird das Kennzeichen „Netzstatus“ aus den folgenden gesetzlichen Grenzwerten (EN 50160) abgeleitet.
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{lXll}
+\toprule
+\textbf{KPI} & \textbf{Standard / Norm} & \textbf{Min. Schwelle} & \textbf{Max. Schwelle} \\
+\midrule
+Spannungshöhe & DIN EN 50160 & $< 207,0\,\text{V}$ (-10\%) & $> 253,0\,\text{V}$ (+10\%) \\
+Trafo-Belastung & IEC 60076-7 & N/A & $> 100\,\%$ \\
+Thermische Kabellast & DIN VDE 0276 & N/A & $> 100\,\%$ \\
+\bottomrule
+\end{tabularx}
+\caption{Grenzwerte für KPIs}
+\end{table}
+
+% -------------------------------------------------------------------
+\section{Synthese: Die Entscheidungsmatrix}
+Das Endergebnis von D2.3 ist eine Entscheidungsmatrix, die die Kernfrage des Projekts beantwortet:
+
+\begin{itemize}
+    \item \textbf{Fragestellung:} Spart das GEMS (AP 4/5/8) Geld im Vergleich zum traditionellen Kupferausbau?
+    \item \textbf{Methode:}
+    \begin{enumerate}
+        \item Berechnung von \textbf{Kosten\_Klassisch} (Szenario A mit vollem Netzausbau-CAPEX).
+        \item Berechnung von \textbf{Kosten\_Smart} (Szenario C/D mit GEMS + Abregelungs-OPEX).
+    \end{enumerate}
+    \item \textbf{Erfolgsindikator:}
+\end{itemize}
+
+\[
+\text{Wenn } \textbf{Kosten\_Smart} < \textbf{Kosten\_Klassisch} \rightarrow \text{GEMS-Konzept wirtschaftlich rentabel.}
+\]
+
+\newpage
+\appendix
+
+% ===================================================================
+% ANHANG A
+% ===================================================================
+\section{Technische Spezifikationen \& Schnittstellen}
+\textbf{Dokument:} Technische Anlage zu D2.3 (Evaluations-Tool)
+
+\subsection{Schnittstelle: Simulationsergebnisse (Input für AP 2.2)}
+Diese Schnittstelle definiert das Datenformat, das die Netzsimulation (AP 3) bereitstellen muss. Es werden zwei Formate unterstützt: \textbf{JSON} (bevorzugt) und \textbf{CSV}.
+
+\subsubsection{Dateiformat: JSON}
+Dateinamenskonvention: \texttt{results\_[SzenarioID]\_[Zeitstempel].json}
+
+\begin{lstlisting}[language=json, caption={Beispiel JSON Output}]
+{
+  "meta": {
+    "projectId": "PhyLFlex",
+    "simulationId": "SIM_SCENARIO_C_2024",
+    "description": "Szenario mit 50% EV-Durchdringung und GEMS-Steuerung",
+    "createdAt": "2024-10-15T14:30:00Z",
+    "timeStepMinutes": 15
+  },
+  "timeSeries": [
+    {
+      "timestamp": "2024-06-01T12:00:00Z",
+      "gridStatus": "OK",
+      "minVoltageV": 228.5,
+      "maxVoltageV": 235.1,
+      "trafoLoadPct": 45.2,
+      "cableFailuresKm": 0.0,
+      "curtailedLoadKwh": 0.0,
+      "curtailedPvKwh": 0.0
+    },
+    {
+      "timestamp": "2024-06-01T12:30:00Z",
+      "gridStatus": "CRITICAL",
+      "minVoltageV": 206.5,
+      "maxVoltageV": 254.2,
+      "trafoLoadPct": 102.1,
+      "cableFailuresKm": 0.45,
+      "curtailedLoadKwh": 15.0,
+      "curtailedPvKwh": 8.2
+    }
+  ]
+}
+\end{lstlisting}
+
+\subsubsection{Dateiformat: CSV}
+Dateinamenskonvention: \texttt{results\_[SzenarioID].csv}
+\begin{itemize}
+    \item Trennzeichen: Komma (\texttt{,})
+    \item Dezimaltrenner: Punkt (\texttt{.})
+    \item Kodierung: UTF-8
+\end{itemize}
+
+\begin{lstlisting}[caption={Beispiel CSV Output}]
+timestamp,grid_status,min_voltage_v,max_voltage_v,trafo_load_pct,cable_failures_km,curtailed_load_kwh,curtailed_pv_kwh
+2024-06-01T12:00:00Z,OK,228.5,235.1,45.2,0.0,0.0,0.0
+2024-06-01T12:15:00Z,WARNING,215.0,251.8,88.5,0.0,2.5,0.0
+2024-06-01T12:30:00Z,CRITICAL,206.5,254.2,102.1,0.45,15.0,8.2
+\end{lstlisting}
+
+\subsubsection{Datendefinitionen}
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l l l l X}
+\toprule
+\textbf{Feld (JSON)} & \textbf{CSV Header} & \textbf{Typ} & \textbf{Einh.} & \textbf{Beschreibung} \\
+\midrule
+\texttt{timestamp} & \texttt{timestamp} & String & ISO & Zeitstempel (UTC). \\
+\texttt{gridStatus} & \texttt{grid\_status} & String & Enum & Aggregierter Status. \\
+\texttt{minVoltageV} & \texttt{min\_voltage\_v} & Float & V & Tiefste Spg. (L-N). \\
+\texttt{maxVoltageV} & \texttt{max\_voltage\_v} & Float & V & Höchste Spg. (L-N). \\
+\texttt{trafoLoadPct} & \texttt{trafo\_load\_pct} & Float & \% & Auslastung Trafo. \\
+\texttt{cableFailuresKm} & \texttt{cable\_failures\_km} & Float & km & Länge überlastete Kabel. \\
+\texttt{curtailedLoadKwh} & \texttt{curtailed\_load\_kwh} & Float & kWh & Nicht gelieferte Energie. \\
+\texttt{curtailedPvKwh} & \texttt{curtailed\_pv\_kwh} & Float & kWh & Abgeregelte PV-Energie. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Konfiguration: Ökonomische Parameter (Input für AP 2.2)}
+Diese Konfigurationsdatei steuert die Bewertungsparameter. Sie ermöglicht Sensitivitätsanalysen.
+
+\subsubsection{Dateiformat: JSON}
+Dateiname: \texttt{config.json}
+
+\begin{lstlisting}[language=json, caption={config.json}]
+{
+  "meta": {
+    "configName": "Basis-Szenario 2025",
+    "version": "1.0",
+    "editor": "HAW Landshut",
+    "currency": "EUR"
+  },
+  "economics": {
+    "capex": {
+      "description": "Kostenparameter fuer Netzausbau (Hardware)",
+      "cable_reinforcement_cost_per_km": 80000.0,
+      "trafo_replacement_cost_unit": 25000.0,
+      "lifespan_years": 40,
+      "interest_rate_pct": 3.5
+    },
+    "opex": {
+      "description": "Kostenparameter fuer betriebliche Eingriffe",
+      "pv_feed_in_tariff_eur_kwh": 0.082,
+      "penalties": {
+        "load_curtailment_penalty_eur_kwh": 1.50,
+        "pv_curtailment_compensation_eur_kwh": 0.082
+      }
+    }
+  }
+}
+\end{lstlisting}
+
+\subsubsection{Parameter-Erklärung}
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Parameter} & \textbf{Einh.} & \textbf{Beschreibung} \\
+\midrule
+\texttt{cable\_reinforcement...} & €/km & Kosten Tiefbau u. Material (NS-Kabel). \\
+\texttt{trafo\_replacement...} & €/Stk & Pauschalkosten Trafo-Austausch. \\
+\texttt{pv\_feed\_in\_tariff...} & €/kWh & Einspeisevergütung (EEG). \\
+\texttt{load\_curtailment...} & €/kWh & Monetärer Wert für Komfortverlust. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\newpage
+
+% ===================================================================
+% ANHANG B
+% ===================================================================
+\section{Referenz-Implementierung (Python-Logik)}
+\textbf{Dokument:} Technische Anlage zu D2.3 (Evaluations-Tool)
+
+Dieser Anhang beschreibt die Referenz-Implementierung des \textbf{Cost Balancing Models} in Python.
+
+\subsection{Voraussetzungen \& Bibliotheken}
+Benötigte Bibliotheken:
+\begin{itemize}
+    \item \texttt{pandas}: Für die Verarbeitung der Zeitreihen.
+    \item \texttt{json}: Für das Einlesen der Konfiguration.
+\end{itemize}
+
+\subsection{Implementierung: \texttt{GridEconomicEvaluator}}
+
+\begin{lstlisting}[language=Python, caption={Evaluator Klasse in Python}]
+import json
+import pandas as pd
+
+class GridEconomicEvaluator:
+    """
+    Klasse zur wirtschaftlichen Bewertung von Netzsimulationsdaten.
+    Vergleicht 'Kupferausbau' (CAPEX) mit 'Flexibilitaet' (OPEX).
+    """
+
+    def __init__(self, config_path: str):
+        # 1. Laden der Konfigurationsdatei (Preise & Grenzwerte)
+        with open(config_path, 'r', encoding='utf-8') as f:
+            self.config = json.load(f)
+        
+        # Extrahieren der Wirtschaftsparameter
+        self.econ = self.config['economics']
+        
+    def evaluate_scenario(self, simulation_results_csv: str):
+        """
+        Fuehrt die Kostenanalyse fuer ein gegebenes Szenario durch.
+        """
+        # 2. Laden der Simulationsdaten
+        df = pd.read_csv(simulation_results_csv)
+        
+        # --- A. Berechnung CAPEX (Virtueller Netzausbau) ---
+        # Logik: Wenn Kabel thermisch ueberlastet sind, muessen sie
+        # verstaerkt werden. Wir nehmen das Maximum an.
+        
+        max_cable_failure_km = df['cable_failures_km'].max()
+        trafo_overload_events = df[df['trafo_load_pct'] > 100].shape[0]
+        
+        # Kostenberechnung Kabel
+        cost_cabling = (max_cable_failure_km * self.econ['capex']['cable_reinforcement_cost_per_km'])
+        
+        # Kostenberechnung Trafo (Pauschal bei Ueberlastung)
+        cost_trafo = 0.0
+        if trafo_overload_events > 0:
+            cost_trafo = self.econ['capex']['trafo_replacement_cost_unit']
+            
+        total_capex = cost_cabling + cost_trafo
+
+        # --- B. Berechnung OPEX (Interventionskosten) ---
+        # Logik: Summe der Energieverluste * Kosten.
+        
+        # Kosten durch PV-Abregelung
+        total_curtailed_pv_kwh = df['curtailed_pv_kwh'].sum()
+        cost_opex_pv = (total_curtailed_pv_kwh * self.econ['opex']['pv_feed_in_tariff_eur_kwh'])
+        
+        # Kosten durch Last-Verschiebung
+        total_curtailed_load_kwh = df['curtailed_load_kwh'].sum()
+        cost_opex_load = (total_curtailed_load_kwh * self.econ['opex']['penalties']['load_curtailment_penalty_eur_kwh'])
+        
+        total_opex = cost_opex_pv + cost_opex_load
+        
+        return {
+            "capex_eur": round(total_capex, 2),
+            "opex_eur": round(total_opex, 2),
+            "total_system_cost_eur": round(total_capex + total_opex, 2),
+            "details": {
+                "cable_km_replaced": max_cable_failure_km,
+                "trafo_replaced": trafo_overload_events > 0
+            }
+        }
+
+# --- Anwendungsbeispiel (Main) ---
+if __name__ == "__main__":
+    evaluator = GridEconomicEvaluator("config.json")
+    result = evaluator.evaluate_scenario("results_SIM_SCENARIO_C.csv")
+    
+    print("--- EVALUATION REPORT: PhyLFlex D2.3 ---")
+    print(f"Szenario Kosten: {result['total_system_cost_eur']} EUR")
+    
+    if result['capex_eur'] > 0 and result['opex_eur'] < result['capex_eur']:
+        print("FAZIT: GEMS-Einsatz ist wirtschaftlicher.")
+    elif result['capex_eur'] == 0:
+        print("FAZIT: Netz ist stabil.")
+    else:
+        print("FAZIT: Netzausbau waere guenstiger.")
+\end{lstlisting}
+
+\subsection{Integrationshinweise}
+\begin{enumerate}
+    \item \textbf{Zeitschritt-Skalierung:} Das Output-Format liefert Energiewerte (\texttt{kWh}). Falls die Simulation nur Leistung (\texttt{kW}) liefert, muss umgerechnet werden (bei 15-Min-Schritten: $\frac{kW}{4}$).
+    \item \textbf{Kupferpreis-Index:} Der Parameter \texttt{cable\_reinforcement\_cost\_per\_km} sollte idealerweise jährlich aktualisiert werden.
+    \item \textbf{Wiederholte Kabel-Fehler:} Die Logik \texttt{max()} für \texttt{cable\_failures\_km} verhindert, dass derselbe überlastete Kabelstrang mehrfach berechnet wird.
+\end{enumerate}
+
+\end{document}
